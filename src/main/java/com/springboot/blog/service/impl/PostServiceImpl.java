@@ -3,10 +3,15 @@ package com.springboot.blog.service.impl;
 import com.springboot.blog.entity.Post;
 import com.springboot.blog.exception.ResourceNotFoundException;
 import com.springboot.blog.payload.PostDto;
+import com.springboot.blog.payload.PostResponse;
 import com.springboot.blog.repository.PostRepository;
 import com.springboot.blog.service.PostService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,15 +33,26 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getAllPosts(){
-        List<Post> res = postRepository.findAll();
+    public PostResponse getAllPosts(int pageNo, int pageSize, String sortBy){
+        PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+
+        Page<Post> res = postRepository.findAll(pageable);
+        List<Post> ListOfPosts = res.getContent();
 
         List<PostDto> postDtoList = new ArrayList<PostDto>();
-        for(Post post: res){
+        for(Post post: ListOfPosts){
             postDtoList.add(mapToDto(post));
         }
 
-            return postDtoList;
+        PostResponse postResponse = new PostResponse();
+        postResponse.setContent(postDtoList);
+        postResponse.setPageNo(res.getNumber());
+        postResponse.setPageSize(res.getSize());
+        postResponse.setTotalElement(res.getTotalElements());
+        postResponse.setTotalPages(res.getTotalPages());
+        postResponse.setLast(res.isLast());
+
+            return postResponse;
     }
 
     private PostDto mapToDto(Post post){
