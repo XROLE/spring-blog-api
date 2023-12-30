@@ -27,7 +27,7 @@ public class JwtTokenProvider {
 
         String jwtToken = Jwts.builder()
                 .setSubject(username)
-                .setIssuedAt(new Date)
+                .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(key())
                 .compact();
