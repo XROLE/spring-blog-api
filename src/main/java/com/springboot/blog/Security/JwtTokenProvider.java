@@ -53,7 +53,7 @@ public class JwtTokenProvider {
         return username;
     }
 
-    public Boolean validateToken(String token) {
+    public boolean validateToken(String token) {
         try {
             Jwts.parser()
                     .setSigningKey(key())
