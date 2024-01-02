@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -111,4 +112,13 @@ Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
         Post post =  postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
         postRepository.delete(post);
     }
+
+    @Override
+    public List<PostDto> getPostByCategoryId(Long categoryId) {
+      Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "Id", categoryId));
+
+        List<Post> posts = postRepository.findByCategoryId(categoryId);
+        return posts.stream().map((post) -> mapToDto(post)).collect(Collectors.toList());
+    }
+
 }
