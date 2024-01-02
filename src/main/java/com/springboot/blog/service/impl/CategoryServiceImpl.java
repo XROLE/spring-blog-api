@@ -55,4 +55,10 @@ public class CategoryServiceImpl implements CategorySerrvice {
 
         return modelMapper.map(category, CategoryDto.class);
     }
+
+    @Override
+    public void deleteCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Categorry", "Id", categoryId));
+        categoryRepository.delete(category);
+    }
 }
