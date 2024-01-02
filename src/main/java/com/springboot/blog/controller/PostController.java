@@ -4,6 +4,7 @@ import com.springboot.blog.payload.PostDto;
 import com.springboot.blog.payload.PostResponse;
 import com.springboot.blog.service.PostService;
 import com.springboot.blog.utils.AppConstants;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,11 @@ public class PostController {
     public PostController(PostService postService) {
         this.postService = postService;
     }
-@PreAuthorize("hasRole('ADMIN')")
-    @PostMapping
+    @SecurityRequirement(
+            name = "Bearer Authentication"
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+@PostMapping
     public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto){
         return new ResponseEntity<>(postService.createPost(postDto), HttpStatus.CREATED);
     }
@@ -41,6 +45,9 @@ public class PostController {
     return  ResponseEntity.ok(postService.getPostsById(id));
     }
 
+    @SecurityRequirement(
+            name = "Bearer Authentication"
+    )
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<PostDto> updatePost(@Valid @RequestBody  PostDto postDto, @PathVariable Long id){
@@ -48,6 +55,9 @@ public class PostController {
    return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @SecurityRequirement(
+            name = "Bearer Authentication"
+    )
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePost(@PathVariable(name = "id") Long id){
