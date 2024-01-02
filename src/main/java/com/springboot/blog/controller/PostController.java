@@ -4,7 +4,10 @@ import com.springboot.blog.payload.PostDto;
 import com.springboot.blog.payload.PostResponse;
 import com.springboot.blog.service.PostService;
 import com.springboot.blog.utils.AppConstants;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
+@Tag(
+        name = "CRUD REST Api for Post Resources"
+)
 public class PostController {
 
     private final PostService postService;
@@ -26,12 +32,29 @@ public class PostController {
     @SecurityRequirement(
             name = "Bearer Authentication"
     )
+    @ApiResponse(
+            responseCode = "201",
+            description = "HTTP Status 201 CREATED"
+    )
+    @Operation(
+            summary = "Create Post REST API",
+            description = "Create Post REST API is used to save paost into the database"
+    )
     @PreAuthorize("hasRole('ADMIN')")
+
 @PostMapping
     public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto){
         return new ResponseEntity<>(postService.createPost(postDto), HttpStatus.CREATED);
     }
-@GetMapping
+    @ApiResponse(
+            responseCode = "200",
+            description = "HTTP Status 200 SUCCESS"
+    )
+    @Operation(
+            summary = "Get All Post REST API",
+            description = "Get All Post REST API is used to get all paost from the database"
+    )
+    @GetMapping
     public PostResponse getAllPosts(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
@@ -40,6 +63,14 @@ public class PostController {
 ){
         return postService.getAllPosts(pageNo, pageSize, sortBy, sortDir);
     }
+    @ApiResponse(
+            responseCode = "200",
+            description = "HTTP Status 200 SUCCESS"
+    )
+    @Operation(
+            summary = "Get Post REST API",
+            description = "Get Post REST API is used to get a single paost from the database"
+    )
     @GetMapping("/{id}")
     public ResponseEntity<PostDto> getPostsById(@PathVariable(name = "id") Long id){
     return  ResponseEntity.ok(postService.getPostsById(id));
@@ -47,6 +78,14 @@ public class PostController {
 
     @SecurityRequirement(
             name = "Bearer Authentication"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "HTTP Status 200 SUCCESS"
+    )
+    @Operation(
+            summary = "Update Post REST API",
+            description = "Update Post REST API is used to Update a single paost from the database"
     )
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
@@ -57,6 +96,14 @@ public class PostController {
 
     @SecurityRequirement(
             name = "Bearer Authentication"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "HTTP Status 200 SUCCESS"
+    )
+    @Operation(
+            summary = "Delete Post REST API",
+            description = "Delete Post REST API is used to delete a single paost from the database"
     )
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
