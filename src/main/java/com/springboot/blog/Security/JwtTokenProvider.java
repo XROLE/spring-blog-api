@@ -54,6 +54,7 @@ public class JwtTokenProvider {
     }
 
     public boolean validateToken(String token) {
+        System.out.println("Jwt xrole " + token);
         try {
             Jwts.parser()
                     .setSigningKey(key())
