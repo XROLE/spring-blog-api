@@ -10,4 +10,6 @@ public interface CategorySerrvice {
     CategoryDto getCategory(Long categoryId);
 
     List<CategoryDto> getAllCategories();
+
+    CategoryDto updateCategory(CategoryDto categoryDto, Long categoryId);
 }
