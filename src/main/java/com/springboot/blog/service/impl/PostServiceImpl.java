@@ -94,9 +94,13 @@ Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
     @Override
     public PostDto updatePost(PostDto postDto, Long id) {
         Post post =  postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+
+       Category category = categoryRepository.findById(postDto.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException("Category", "Id", postDto.getCategoryId()));
+
         post.setTitle(postDto.getTitle());
         post.setDescription(postDto.getDescription());
         post.setContent(postDto.getContent());
+        post.setCategory(category);
 
         Post res = postRepository.save(post);
         return mapToDto(res);
